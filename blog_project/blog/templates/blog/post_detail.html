@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    {% load cache %}
+
+    <title>{{ post.title }}</title>
+</head>
+<body>
+
+<a href="{% url 'post_list' %}">Back to post list</a>
+
+<h1>{{ post.title }}</h1>
+
+<p>
+    Автор: {{ post.author.username }}
+</p>
+
+<p>
+    {{ post.created_at }}
+</p>
+
+<hr>
+
+<p>
+    {{ post.text }}
+</p>
+
+<hr>
+
+<h2>Comments</h2>
+
+{% for comment in comments %}
+    <div>
+        <b>{{ comment.author.username }}</b>
+        <br>
+        {{ comment.text }}
+        <br>
+        <small>{{ comment.created_at }}</small>
+    </div>
+
+    <hr>
+
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+
+{% if user.is_authenticated %}
+    <h2>Add a comment</h2>
+
+    <form method="post" action="{% url 'add_comment' post.pk %}">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Send
+        </button>
+    </form>
+
+{% else %}
+    <p>
+        <a href="{% url 'login' %}">
+            Sign in to leave a comment.
+        </a>
+    </p>
+{% endif %}
+
+</body>
+</html>
